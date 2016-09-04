@@ -1,5 +1,15 @@
-import bookshelf from '../bookshelf'
+import mongoose from 'mongoose'
+import timestamps from 'mongoose-timestamp'
 
-export default bookshelf.Model.extend({
-  tableName: 'users'
+mongoose.Promise = global.Promise
+
+const User = new mongoose.Schema({
+  username: {type: String, required: true, unique: true},
+  email: {type: String, required: true, unique: true},
+  timezone: {type: String, required: true},
+  password: {type: String, required: true}
 })
+
+User.plugin(timestamps)
+
+export default mongoose.model('User', User)

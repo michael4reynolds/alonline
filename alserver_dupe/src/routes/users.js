@@ -10,15 +10,16 @@ let router = express.Router()
 function validateInput(data, otherValidations) {
   let {errors} = otherValidations(data)
 
-  return User.query({
-    where: {email: data.email},
-    orWhere: {username: data.username}
-  }).fetch().then(user => {
+  return User.findOne({
+    $or: [
+      {email: data.email},
+      {username: data.username}]
+  }).then(user => {
     if (user) {
-      if (user.get('username') === data.username) {
+      if (user.username === data.username) {
         errors.username = 'There is a user with that username'
       }
-      if (user.get('email') === data.email) {
+      if (user.email === data.email) {
         errors.email = 'There is a user with that email'
       }
     }
@@ -30,12 +31,13 @@ function validateInput(data, otherValidations) {
 }
 
 router.get('/:identifier', (req, res) => {
-  User.query({
-    select: ['username', 'email'],
-    where: {email: req.params.identifier},
-    orWhere: {username: req.params.identifier}
-  }).fetch().then(user => {
-    res.json({user})
+  User.findOne({
+    $or: [
+      {email: req.params.identifier},
+      {username: req.params.identifier}]
+  }).then(user => {
+    const {username, email} = user
+    res.json({user: {username, email}})
   })
 })
 
@@ -45,8 +47,8 @@ router.post('/', (req, res) => {
       const {username, password, timezone, email} = req.body
       const password_digest = bcrypt.hashSync(password, 10)
 
-      User.forge({
-        username, timezone, email, password_digest}, {hasTimestamps: true}).save()
+      let user = new User({username, timezone, email, password: password_digest})
+      user.save()
         .then(user => res.json({success: true}))
         .catch(err => res.status(500).json({error: err}))
     } else {

@@ -9,15 +9,16 @@ let router = express.Router()
 router.post('/', (req, res) => {
   const {identifier, password} = req.body
 
-  User.query({
-    where: {username: identifier},
-    orWhere: {email: identifier}
-  }).fetch().then(user => {
+  return User.findOne({
+    $or: [
+      {username: identifier},
+      {email: identifier}]
+  }).then(user => {
     if (user) {
-      if (bcrypt.compareSync(password, user.get('password_digest'))) {
+      if (bcrypt.compareSync(password, user.password)) {
         const token = jwt.sign({
-          id: user.get('id'),
-          username: user.get('username')
+          id: user.id,
+          username: user.username
         }, config.jwtSecret)
         res.json({token})
       } else {
