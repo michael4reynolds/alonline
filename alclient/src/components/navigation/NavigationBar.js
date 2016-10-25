@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
-import {logout} from '../actions/authActions'
+import {logout} from '../../actions/authActions'
 
 class NavigationBar extends Component {
   static propTypes = {

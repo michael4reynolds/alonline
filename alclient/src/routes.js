@@ -1,8 +1,8 @@
 import React from 'react'
 import {Route, IndexRoute} from 'react-router'
 
-import App from './components/App'
-import Greetings from './components/Greetings'
+import App from './components/App/App'
+import Greetings from './components/greetings/Greetings'
 import SignupPage from './components/signup/SignupPage'
 import LoginPage from './components/login/LoginPage'
 import NewEventPage from './components/events/NewEventPage'
@@ -14,5 +14,4 @@ export default (
     <Route path='signup' component={SignupPage} />
     <Route path='login' component={LoginPage} />
     <Route path='new-event' component={requireAuth(NewEventPage)} />
-  </Route>
-)
+  </Route>)
